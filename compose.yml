@@ -15,6 +15,7 @@ services:
     container_name: life-calendar-auth-server
     restart: always
     environment:
+      - ENV=${ENV}
       - PORT=${AUTH_SERVER_CONTAINER_PORT}
       - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
       - AUTH0_DOMAIN=${AUTH0_DOMAIN}
@@ -37,6 +38,7 @@ services:
     container_name: life-calendar-user-server
     restart: always
     environment:
+      - ENV=${ENV}
       - PORT=${USER_SERVER_CONTAINER_PORT}
       - DB_HOST=${USER_DB_HOST}
       - DB_USER=${USER_DB_USER}
@@ -84,7 +86,8 @@ services:
     container_name: life-calendar-auth-grpc-gateway
     restart: always
     environment:
-      - GRPC_GATEWAY_PORT=${AUTH_GRPC_GATEWAY_CONTAINER_PORT}
+      - ENV=${ENV}
+      - PORT=${AUTH_GRPC_GATEWAY_CONTAINER_PORT}
       - SERVER_HOST=${AUTH_SERVER_HOST}
       - SERVER_PORT=${AUTH_SERVER_CONTAINER_PORT}
     ports:
@@ -97,7 +100,8 @@ services:
     container_name: life-calendar-user-grpc-gateway
     restart: always
     environment:
-      - GRPC_GATEWAY_PORT=${USER_GRPC_GATEWAY_CONTAINER_PORT}
+      - ENV=${ENV}
+      - PORT=${USER_GRPC_GATEWAY_CONTAINER_PORT}
       - SERVER_HOST=${USER_SERVER_HOST}
       - SERVER_PORT=${USER_SERVER_CONTAINER_PORT}
     ports:

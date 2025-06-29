@@ -1,12 +1,12 @@
 services:
-  frontend:
-    build:
-      context: ../life-calendar-frontend
-      dockerfile: ./Dockerfile
-    container_name: life-calendar-frontend
-    restart: always
-    ports:
-      - "${FRONTEND_HOST_PORT}:${FRONTEND_CONTAINER_PORT}"
+  # frontend:
+  #   build:
+  #     context: ../life-calendar-frontend
+  #     dockerfile: ./Dockerfile
+  #   container_name: life-calendar-frontend
+  #   restart: always
+  #   ports:
+  #     - "${FRONTEND_HOST_PORT}:${FRONTEND_CONTAINER_PORT}"
 
   auth-server:
     build:

@@ -9,11 +9,13 @@ flowchart TD
     user(User)
 
     subgraph gcp[GCP]
-        life_calendar_frontend(Life Calender Frontend)
-        auth_service(Auth Service)
-        user_service(User Service)
-        auth_service_gateway(Auth Service Gateway)
-        user_service_gateway(User Service Gateway)
+        subgraph cloud_run[Cloud Run]
+            life_calendar_frontend(Life Calender Frontend)
+            auth_service(Auth Service)
+            user_service(User Service)
+            auth_service_gateway(Auth Service Gateway)
+            user_service_gateway(User Service Gateway)
+        end
     end
 
     auth0(Auth0)

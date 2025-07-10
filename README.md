@@ -18,14 +18,14 @@ flowchart TD
         end
     end
 
-    auth0(Auth0)
-    user_db[(User DB)]
+    subgraph external[External]
+        auth0(Auth0)
+        user_db[(User DB)]
+    end
 
     user --> life_calendar_frontend
-    life_calendar_frontend --> auth_service_gateway
-    life_calendar_frontend --> user_service_gateway
-    auth_service_gateway --> auth_service
-    user_service_gateway --> user_service
+    life_calendar_frontend --> auth_service_gateway --> auth_service
+    life_calendar_frontend --> user_service_gateway --> user_service
     user_service --> auth_service
     user_service --> user_db
     auth_service --> auth0

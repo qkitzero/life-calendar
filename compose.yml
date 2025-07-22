@@ -59,6 +59,35 @@ services:
       retries: 5
       start_period: 10s
 
+  event-server:
+    build:
+      context: ../event-service
+      dockerfile: ./build/event/Dockerfile
+    container_name: life-calendar-event-server
+    restart: always
+    environment:
+      - ENV=${ENV}
+      - PORT=${EVENT_SERVER_CONTAINER_PORT}
+      - DB_HOST=${EVENT_DB_HOST}
+      - DB_USER=${EVENT_DB_USER}
+      - DB_PASSWORD=${EVENT_DB_PASSWORD}
+      - DB_NAME=${EVENT_DB_NAME}
+      - DB_PORT=${EVENT_DB_CONTAINER_PORT}
+      - DB_SSL_MODE=${EVENT_DB_SSL_MODE}
+      - USER_SERVICE_HOST=${USER_SERVER_HOST}
+      - USER_SERVICE_PORT=${USER_SERVER_CONTAINER_PORT}
+    depends_on:
+      event-db:
+        condition: service_healthy
+    ports:
+      - "${EVENT_SERVER_HOST_PORT}:${EVENT_SERVER_CONTAINER_PORT}"
+    healthcheck:
+      test: ["CMD", "grpc_health_probe", "-addr=localhost:${EVENT_SERVER_CONTAINER_PORT}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
   user-db:
     image: postgres:17
     container_name: life-calendar-user-db
@@ -77,6 +106,25 @@ services:
       start_period: 10s
     volumes:
       - life-calendar-user-db-data:/var/lib/postgresql/data
+
+  event-db:
+    image: postgres:17
+    container_name: life-calendar-event-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${EVENT_DB_NAME}
+      POSTGRES_USER: ${EVENT_DB_USER}
+      POSTGRES_PASSWORD: ${EVENT_DB_PASSWORD}
+    ports:
+      - "${EVENT_DB_HOST_PORT}:${EVENT_DB_CONTAINER_PORT}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${EVENT_DB_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - life-calendar-event-db-data:/var/lib/postgresql/data
 
   auth-grpc-gateway:
     build:
@@ -106,5 +154,20 @@ services:
     ports:
       - "${USER_GRPC_GATEWAY_HOST_PORT}:${USER_GRPC_GATEWAY_CONTAINER_PORT}"
 
+  event-grpc-gateway:
+    build:
+      context: ../event-service
+      dockerfile: ./build/gateway/Dockerfile
+    container_name: life-calendar-event-grpc-gateway
+    restart: always
+    environment:
+      - ENV=${ENV}
+      - PORT=${EVENT_GRPC_GATEWAY_CONTAINER_PORT}
+      - SERVER_HOST=${EVENT_SERVER_HOST}
+      - SERVER_PORT=${EVENT_SERVER_CONTAINER_PORT}
+    ports:
+      - "${EVENT_GRPC_GATEWAY_HOST_PORT}:${EVENT_GRPC_GATEWAY_CONTAINER_PORT}"
+
 volumes:
   life-calendar-user-db-data:
+  life-calendar-event-db-data:

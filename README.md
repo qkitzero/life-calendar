@@ -3,6 +3,7 @@
 - [Life Calender Frontend](https://github.com/qkitzero/life-calendar-frontend)
 - [Auth Service](https://github.com/qkitzero/auth-service)
 - [User Service](https://github.com/qkitzero/user-service)
+- [Event Service](https://github.com/qkitzero/event-service)
 
 ```mermaid
 flowchart TD
@@ -30,6 +31,7 @@ flowchart TD
     life_calendar_frontend --> auth_service_gateway --> auth_service
     life_calendar_frontend --> user_service_gateway --> user_service
     life_calendar_frontend --> event_service_gateway --> event_service
+    event_service --> auth_service
     user_service --> auth_service
     event_service --> user_service
     user_service --> user_db

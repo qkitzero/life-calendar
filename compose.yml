@@ -1,12 +1,17 @@
 services:
-  # frontend:
-  #   build:
-  #     context: ../life-calendar-frontend
-  #     dockerfile: ./Dockerfile
-  #   container_name: life-calendar-frontend
-  #   restart: always
-  #   ports:
-  #     - "${FRONTEND_HOST_PORT}:${FRONTEND_CONTAINER_PORT}"
+  frontend:
+    build:
+      context: ../life-calendar-frontend
+      dockerfile: ./Dockerfile
+    container_name: life-calendar-frontend
+    restart: always
+    environment:
+      - NEXT_PUBLIC_SITE_URL=${FRONTEND_NEXT_PUBLIC_SITE_URL}
+      - AUTH_SERVICE_URL=${FRONTEND_AUTH_SERVICE_URL}
+      - USER_SERVICE_URL=${FRONTEND_USER_SERVICE_URL}
+      - EVENT_SERVICE_URL=${FRONTEND_EVENT_SERVICE_URL}
+    ports:
+      - "${FRONTEND_HOST_PORT}:${FRONTEND_CONTAINER_PORT}"
 
   auth-server:
     build:

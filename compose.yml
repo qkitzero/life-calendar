@@ -23,12 +23,20 @@ services:
       - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
     ports:
       - "${AUTH_SERVER_HOST_PORT}:${AUTH_SERVER_CONTAINER_PORT}"
-    healthcheck:
-      test: ["CMD", "grpc_health_probe", "-addr=localhost:${AUTH_SERVER_CONTAINER_PORT}"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
+
+  auth-grpc-gateway:
+    build:
+      context: ../auth-service
+      dockerfile: ./build/gateway/Dockerfile
+    container_name: life-calendar-auth-grpc-gateway
+    restart: always
+    environment:
+      - ENV=${ENV}
+      - PORT=${AUTH_GRPC_GATEWAY_CONTAINER_PORT}
+      - SERVER_HOST=${AUTH_SERVER_HOST}
+      - SERVER_PORT=${AUTH_SERVER_CONTAINER_PORT}
+    ports:
+      - "${AUTH_GRPC_GATEWAY_HOST_PORT}:${AUTH_GRPC_GATEWAY_CONTAINER_PORT}"
 
   user-server:
     build:
@@ -52,12 +60,20 @@ services:
         condition: service_healthy
     ports:
       - "${USER_SERVER_HOST_PORT}:${USER_SERVER_CONTAINER_PORT}"
-    healthcheck:
-      test: ["CMD", "grpc_health_probe", "-addr=localhost:${USER_SERVER_CONTAINER_PORT}"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
+
+  user-grpc-gateway:
+    build:
+      context: ../user-service
+      dockerfile: ./build/gateway/Dockerfile
+    container_name: life-calendar-user-grpc-gateway
+    restart: always
+    environment:
+      - ENV=${ENV}
+      - PORT=${USER_GRPC_GATEWAY_CONTAINER_PORT}
+      - SERVER_HOST=${USER_SERVER_HOST}
+      - SERVER_PORT=${USER_SERVER_CONTAINER_PORT}
+    ports:
+      - "${USER_GRPC_GATEWAY_HOST_PORT}:${USER_GRPC_GATEWAY_CONTAINER_PORT}"
 
   event-server:
     build:
@@ -83,12 +99,20 @@ services:
         condition: service_healthy
     ports:
       - "${EVENT_SERVER_HOST_PORT}:${EVENT_SERVER_CONTAINER_PORT}"
-    healthcheck:
-      test: ["CMD", "grpc_health_probe", "-addr=localhost:${EVENT_SERVER_CONTAINER_PORT}"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
+
+  event-grpc-gateway:
+    build:
+      context: ../event-service
+      dockerfile: ./build/gateway/Dockerfile
+    container_name: life-calendar-event-grpc-gateway
+    restart: always
+    environment:
+      - ENV=${ENV}
+      - PORT=${EVENT_GRPC_GATEWAY_CONTAINER_PORT}
+      - SERVER_HOST=${EVENT_SERVER_HOST}
+      - SERVER_PORT=${EVENT_SERVER_CONTAINER_PORT}
+    ports:
+      - "${EVENT_GRPC_GATEWAY_HOST_PORT}:${EVENT_GRPC_GATEWAY_CONTAINER_PORT}"
 
   logging-server:
     build:
@@ -166,48 +190,6 @@ services:
       start_period: 10s
     volumes:
       - life-calendar-logging-db-data:/var/lib/postgresql/data
-
-  auth-grpc-gateway:
-    build:
-      context: ../auth-service
-      dockerfile: ./build/gateway/Dockerfile
-    container_name: life-calendar-auth-grpc-gateway
-    restart: always
-    environment:
-      - ENV=${ENV}
-      - PORT=${AUTH_GRPC_GATEWAY_CONTAINER_PORT}
-      - SERVER_HOST=${AUTH_SERVER_HOST}
-      - SERVER_PORT=${AUTH_SERVER_CONTAINER_PORT}
-    ports:
-      - "${AUTH_GRPC_GATEWAY_HOST_PORT}:${AUTH_GRPC_GATEWAY_CONTAINER_PORT}"
-
-  user-grpc-gateway:
-    build:
-      context: ../user-service
-      dockerfile: ./build/gateway/Dockerfile
-    container_name: life-calendar-user-grpc-gateway
-    restart: always
-    environment:
-      - ENV=${ENV}
-      - PORT=${USER_GRPC_GATEWAY_CONTAINER_PORT}
-      - SERVER_HOST=${USER_SERVER_HOST}
-      - SERVER_PORT=${USER_SERVER_CONTAINER_PORT}
-    ports:
-      - "${USER_GRPC_GATEWAY_HOST_PORT}:${USER_GRPC_GATEWAY_CONTAINER_PORT}"
-
-  event-grpc-gateway:
-    build:
-      context: ../event-service
-      dockerfile: ./build/gateway/Dockerfile
-    container_name: life-calendar-event-grpc-gateway
-    restart: always
-    environment:
-      - ENV=${ENV}
-      - PORT=${EVENT_GRPC_GATEWAY_CONTAINER_PORT}
-      - SERVER_HOST=${EVENT_SERVER_HOST}
-      - SERVER_PORT=${EVENT_SERVER_CONTAINER_PORT}
-    ports:
-      - "${EVENT_GRPC_GATEWAY_HOST_PORT}:${EVENT_GRPC_GATEWAY_CONTAINER_PORT}"
 
 volumes:
   life-calendar-user-db-data:

@@ -38,7 +38,6 @@ flowchart TD
     life_calendar_frontend --> auth0
 
     user_service --> auth_service
-    event_service --> auth_service
     logging_service --> auth_service
 
     event_service --> user_service
